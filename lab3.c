@@ -49,6 +49,9 @@ int main(void) {
 
     AD1PCFG &= 0xFFFE;
 
+    // Overheard Ian saying somthing about COM1 = 84
+
+
     AD1CON2 = 0;
 
     AD1CON3 = 0x0101;
