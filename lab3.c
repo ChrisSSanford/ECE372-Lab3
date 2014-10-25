@@ -1,8 +1,4 @@
-// ******************************************************************************************* //
-//
-// File:         oScope.c
-// Date:         10-1-2014
-// Authors:      Garrett Vanhoy
+
 
 #include "p24fj64ga002.h"
 #include <stdio.h>
@@ -25,7 +21,7 @@ int main(void)
     unsigned int adcBuff[16], i=0;
     unsigned int * adcPtr;
     LCDInitialize();
-    AD1PCFG &= 0xFFFE;
+    AD1PCFG &= 0xFFDF;
     AD1CON2 = 0x003C;
     AD1CON3 = 0x0D09;
     AD1CON1 = 0x20E4;
@@ -58,6 +54,7 @@ return 0;
 void _ISR _ADC1Interrupt(void)
 {
     IFS0bits.T1IF = 0;
-    AD1CON1bits.ASAM = 0;
+    AD1CON1bits.SAMP = 0;
+    
 }
 
