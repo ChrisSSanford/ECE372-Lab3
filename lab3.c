@@ -43,17 +43,19 @@ int main(void)
 
         ADC_value = temp/16;
         sprintf(value, "%6d", ADC_value);
-        LCDMoveCursor(0,0); LCDPrintString(value);
+        LCDMoveCursor(0,0);
+        LCDPrintString(value);
         AD_value = (ADC_value * 3.3)/1024;
         sprintf(value, "%6.2f", AD_value);
-        LCDMoveCursor(1,0);LCDPrintString(value);
+        LCDMoveCursor(1,0);
+        LCDPrintString(value);
     }
 return 0;
 }
 
 void _ISR _ADC1Interrupt(void)
 {
-    IFS0bits.T1IF = 0;
+    IFS0bits.AD1IF = 0;
     AD1CON1bits.SAMP = 0;
     
 }
