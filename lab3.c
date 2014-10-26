@@ -1,4 +1,21 @@
+/**************************************************************************************************/
 
+/*
+ * File: lab3.c
+ * Team: Lambda^3
+ * Members: Chris Houseman
+ *          Randy Martinez
+ *          Rachel Powers
+ *          Chris Sanford
+ *
+ * Date: October 31, 2014
+ *
+ * Description: Code that used a potentiometer to control two motors
+ *
+ */
+
+// ******************************************************************************************* //
+// ******************************************************************************************* //
 
 #include "p24fj64ga002.h"
 #include <stdio.h>
