@@ -27,7 +27,9 @@ _CONFIG1( JTAGEN_OFF & GCP_OFF & GWRP_OFF &
 
 _CONFIG2( IESO_OFF & SOSCSEL_SOSC & WUTSEL_LEG & FNOSC_PRIPLL & FCKSM_CSDCMD & OSCIOFNC_OFF &
           IOL1WAY_OFF & I2C1SEL_PRI & POSCMOD_XT )
-
+// ******************************************************************************************* //
+volatile int done = 0;
+// ******************************************************************************************* //
 int main(void)
 {
     unsigned long int temp;
@@ -48,7 +50,7 @@ int main(void)
 
     while(1)
     {
-        while(!IFS0bits.AD1IF);
+        while(!done);
         IFS0bits.AD1IF = 0;
         adcPtr = (unsigned int*)(&ADC1BUF0);
         temp = 0;
@@ -73,6 +75,7 @@ return 0;
 void _ISR _ADC1Interrupt(void)
 {
     IFS0bits.AD1IF = 0;
+    done=1;
     AD1CON1bits.SAMP = 0;
     
 }
