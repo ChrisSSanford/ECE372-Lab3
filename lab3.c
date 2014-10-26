@@ -41,28 +41,30 @@ int main(void)
     unsigned int * adcPtr;
     LCDInitialize();
     AD1PCFG &= 0xFFDF;
-    AD1CON2 = 0x003C;
-    AD1CON3 = 0x0D09;
+    AD1CON2 = 0x0;
+    AD1CON3 = 0x0101;
     AD1CON1 = 0x20E4;
-    AD1CHS = 0;
+    AD1CHS = 5;
     AD1CSSL = 0;
     AD1CON1bits.ADON = 1;
-    IEC0bits.AD1IE = 1;
+    //IEC0bits.AD1IE = 1;
     IFS0bits.AD1IF = 0;
 
     while(1)
     {
-        while(!done);
+        while(!IFS0bits.AD1IF);
         IFS0bits.AD1IF = 0;
-        adcPtr = (unsigned int*)(&ADC1BUF0);
-        temp = 0;
-        for(i=0; i<16; i++)
-        {
-            adcBuff[i] = *adcPtr++;
-            temp = temp +adcBuff[i];
-        }
+        ADC_value = ADC1BUF0;
 
-        ADC_value = temp/16;
+//        adcPtr = (unsigned int*)(&ADC1BUF0);
+//        temp = 0;
+//        for(i=0; i<16; i++)
+//        {
+//            adcBuff[i] = *adcPtr++;
+//            temp = temp +adcBuff[i];
+//        }
+//
+//        ADC_value = temp/16;
         sprintf(value, "%6d", ADC_value);
         LCDMoveCursor(0,0);
         LCDPrintString(value);
@@ -74,11 +76,11 @@ int main(void)
 return 0;
 }
 
-void _ISR _ADC1Interrupt(void)
-{
-    IFS0bits.AD1IF = 0;
-    done=1;
-    AD1CON1bits.SAMP = 0;
-    
-}
+//void _ISR _ADC1Interrupt(void)
+//{
+//    IFS0bits.AD1IF = 0;
+//    done=1;
+//    AD1CON1bits.SAMP = 0;
+//
+//}
 
