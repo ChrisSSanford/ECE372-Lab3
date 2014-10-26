@@ -45,6 +45,8 @@ int main(void)
     AD1CHS = 0;
     AD1CSSL = 0;
     AD1CON1bits.ADON = 1;
+    IEC0bits.AD1IE = 1;
+    IFS0bits.AD1IF = 0;
 
     while(1)
     {
