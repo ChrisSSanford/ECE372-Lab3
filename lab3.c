@@ -53,7 +53,7 @@ int main(void)
     while(1)
     {
         while(!done);
-        IFS0bits.AD1IF = 0;
+        done = 0;
         adcPtr = (unsigned int*)(&ADC1BUF0);
         temp = 0;
         for(i=0; i<16; i++)
