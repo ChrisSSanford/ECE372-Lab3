@@ -100,6 +100,7 @@ int main(void) {
             percent1=100;
             percent2=AD_value/1.65;
             OC2RS =PR3*percent2;
+            percent2=percent2*100;
         }
         else if (AD_value>1.65) {
             OC2RS = PR3;
@@ -107,6 +108,7 @@ int main(void) {
             percent1=(AD_value-1.65)/1.65;
             percent1=100-percent1;
             OC1RS =PR3*(percent1);
+            percent1=percent1*100;
         }
         else {
             OC1RS=PR3;
