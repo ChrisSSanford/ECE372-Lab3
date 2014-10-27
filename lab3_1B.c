@@ -106,7 +106,7 @@ int main(void) {
             OC2RS = PR3;
             percent2=100;
             percent1=(AD_value-1.65)/1.65;
-            percent1=100-percent1;
+            percent1=1-percent1;
             OC1RS =PR3*(percent1);
             percent1=percent1*100;
         }
