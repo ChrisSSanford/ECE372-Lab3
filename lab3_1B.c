@@ -94,6 +94,7 @@ int main(void) {
         sprintf(value, "%6d", ADC_value); // formats value in ADC_value as a 6 character string and stores in in the value character array
         LCDMoveCursor(0,0);                 // moves the cursor on the LCD to the home position
         LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
+        AD_value = (ADC_value * 3.3)/1024;  // converts the binary value of the voltage to the analog value by multiplying by the maximum voltage and dividing by 2^n = 2^10, then stores it in AD_value
         if (AD_value<1.65){
             OC1RS = PR3;
             percent1=100;
