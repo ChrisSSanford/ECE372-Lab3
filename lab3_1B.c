@@ -38,9 +38,11 @@ _CONFIG2( IESO_OFF & SOSCSEL_SOSC & WUTSEL_LEG & FNOSC_PRIPLL & FCKSM_CSDCMD & O
 int main(void) {
 
     
-    int percent = 0;
+    int percent1 = 0;
+    int percent2 = 0;
     int duty1 = 0;
     int duty2 = 0;
+
 
 /**********************************************/
     T3CONbits.TCS = 0; // sets up to use internal clock 
@@ -87,6 +89,7 @@ int ADC_value;      // variable to store the binary value in the ADC buffer
     {
         while(!IFS0bits.AD1IF);  // wait while the A/D 1 interrupt flag is low
         IFS0bits.AD1IF = 0;     // clear the A/D 1 interrupt flag
+        LCDClear();
         ADC_value = ADC1BUF0;   // stores the current value in the A/D 1 buffer in the ADC_value variable
         sprintf(value, "%6d", ADC_value); // formats value in ADC_value as a 6 character string and stores in in the value character array
         LCDMoveCursor(0,0);                 // moves the cursor on the LCD to the home position
@@ -97,25 +100,30 @@ int ADC_value;      // variable to store the binary value in the ADC buffer
         LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
         if (AD_value<1.65){
             OC1RS = PR3;
-            percent=AD_value/1.65;
-            OC2RS =PR3*percent;
+            percent1=100;
+            percent2=AD_value/1.65;
+            OC2RS =PR3*percent2;
         }
         else if (AD_value>1.65) {
             OC2RS = PR3;
-            percent=(AD_value-1.65)/1.65;
-            OC1RS =PR3*(1-percent);
+            percent2=100;
+            percent1=(AD_value-1.65)/1.65;
+            percent1=100-percent1;
+            OC1RS =PR3*(percent1);
         }
         else {
             OC1RS=PR3;
             OC2RS=PR3;
+            percent1=100;
+            percent2=100;
         }
         duty1=OC1RS;
         duty2=OC2RS;
-        sprintf(value, "%6d", duty1); // formats value in ADC_value as a 6 character string and stores in in the value character array
+        sprintf(value, "%3d", percent1); // formats value in ADC_value as a 6 character string and stores in in the value character array
         LCDMoveCursor(1,0);                 // moves the cursor on the LCD to the second line
         LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
-        sprintf(value, "%6d", duty2); // formats value in ADC_value as a 6 character string and stores in in the value character array
-        LCDMoveCursor(1,4);                 // moves the cursor on the LCD to the second line
+        sprintf(value, " %3d", percent2); // formats value in ADC_value as a 6 character string and stores in in the value character array
+        //LCDMoveCursor(1,4);                 // moves the cursor on the LCD to the second line
         LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
     }
 return 0;
