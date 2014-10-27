@@ -52,6 +52,10 @@ int main(void)
 
     while(1)
     {
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 42181bca31638fa6a7a88a8e23f8b8c66d91c1a7
         while(!done);
         done = 0;
         adcPtr = (unsigned int*)(&ADC1BUF0);
@@ -70,6 +74,22 @@ int main(void)
         sprintf(value, "%6.2f", AD_value);
         LCDMoveCursor(1,0);
         LCDPrintString(value);
+<<<<<<< HEAD
+=======
+        AD1CON1bits.SAMP = 1;
+=======
+        while(!IFS0bits.AD1IF);  // wait while the A/D 1 interrupt flag is low
+        IFS0bits.AD1IF = 0;     // clear the A/D 1 interrupt flag
+        ADC_value = ADC1BUF0;   // stores the current value in the A/D 1 buffer in the ADC_value variable
+        sprintf(value, "%6d", ADC_value); // formats value in ADC_value as a 6 character string and stores in in the value character array
+        LCDMoveCursor(0,0);                 // moves the cursor on the LCD to the home position
+        LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
+        AD_value = (ADC_value * 3.3)/1024;  // converts the binary value of the voltage to the analog value by multiplying by the maximum voltage and dividing by 2^n = 2^10, then stores it in AD_value
+        sprintf(value, "%6.2f", AD_value);  // formats the value in AD_value to 2 decimals places and stores it in the value variable
+        LCDMoveCursor(1,0);                 // moves the cursor on the LCD to the second line
+        LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
+>>>>>>> 8f0e66d5a4584c19e294e2f66c931231bd58e4c6
+>>>>>>> 42181bca31638fa6a7a88a8e23f8b8c66d91c1a7
     }
 return 0;
 }
