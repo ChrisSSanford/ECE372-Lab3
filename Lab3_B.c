@@ -1,7 +1,7 @@
 /**************************************************************************************************/
 
 /*
- * File: lab3_1B.c
+ * File: lab3_B.c
  * Team: Lambda^3
  * Members: Chris Houseman
  *          Randy Martinez
@@ -33,11 +33,11 @@ _CONFIG2( IESO_OFF & SOSCSEL_SOSC & WUTSEL_LEG & FNOSC_PRIPLL & FCKSM_CSDCMD & O
 
 
 /*
- * 
+ *
  */
 int main(void) {
 
-    
+
     double percent1 = 0;
     double percent2 = 0;
     int duty1 = 0;
@@ -45,8 +45,8 @@ int main(void) {
 
 
 /**********************************************/
-    T3CONbits.TCS = 0; // sets up to use internal clock 
-    T3CONbits.TGATE = 0; 
+    T3CONbits.TCS = 0; // sets up to use internal clock
+    T3CONbits.TGATE = 0;
     T3CONbits.TON = 0;  // Turn timer 3 off
     IFS0bits.T3IF = 0;  // reset timer 3 interrupt flag
     TMR3 = 0;           // resets timer 3 to 0
@@ -56,7 +56,7 @@ int main(void) {
     IEC0bits.T3IE = 1;
 
 /*****************************************************/
-    
+
 
     OC1CONbits.OCM0 = 1; // Initialize OCx pin low, compare event forces OCx pin high,
     OC1CONbits.OCTSEL = 1; // using timer 3
@@ -132,4 +132,6 @@ void __attribute__((interrupt,auto_psv)) _T3Interrupt(void){
 
 
 }
+
+
 
