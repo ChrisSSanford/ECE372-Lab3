@@ -1,7 +1,7 @@
 /**************************************************************************************************/
 
 /*
- * File: lab3.c
+ * File: lab3_1B.c
  * Team: Lambda^3
  * Members: Chris Houseman
  *          Randy Martinez
@@ -36,6 +36,10 @@ _CONFIG2( IESO_OFF & SOSCSEL_SOSC & WUTSEL_LEG & FNOSC_PRIPLL & FCKSM_CSDCMD & O
  * 
  */
 int main(void) {
+
+    //set the PWM period by writing to the selected timery period register (PRy)
+
+
 
 
 

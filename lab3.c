@@ -27,57 +27,28 @@ _CONFIG1( JTAGEN_OFF & GCP_OFF & GWRP_OFF &
 
 _CONFIG2( IESO_OFF & SOSCSEL_SOSC & WUTSEL_LEG & FNOSC_PRIPLL & FCKSM_CSDCMD & OSCIOFNC_OFF &
           IOL1WAY_OFF & I2C1SEL_PRI & POSCMOD_XT )
-// ******************************************************************************************* //
-volatile int done = 0;
-// ******************************************************************************************* //
+
 int main(void)
 {
-    unsigned long int temp;
-    int ADC_value;
-    char value[8];
-    double AD_value;
 
-    unsigned int adcBuff[16], i=0;
-    unsigned int * adcPtr;
-    LCDInitialize();
-    AD1PCFG &= 0xFFDF;
-    AD1CON2 = 0x003C;
-    AD1CON3 = 0x0D09;
-    AD1CON1 = 0x20E4;
-    AD1CHS = 0;
-    AD1CSSL = 0;
-    AD1CON1bits.ADON = 1;
-    IEC0bits.AD1IE = 1;
-    IFS0bits.AD1IF = 0;
+    int ADC_value;      // variable to store the binary value in the ADC buffer
+    char value[8];      //  character array to store the values to be printed to the LCD
+    double AD_value;    // variable to store the calculated value of the voltage
+
+    LCDInitialize();  // initialize the LCD display
+
+    AD1PCFG &= 0xFFDF; // Pin 7, AN5, where the POT is connected, IO6, is set to analog mode, AD module samples pin voltage
+    AD1CON2 = 0x0;       // Always uses MUX A input multiplexer settings, configured as one 16-word buffer, interrupts at the completion of conversion for each sample/convert sequence, use the channel selected by the CH0SA bits as the MUX A input
+    AD1CON3 = 0x0101;      //set the A/D conversion clock period to be 2*Tcy, set the Auto-Sample Time bits to be 1 T_AD, A/D conversion clock derived from system clock
+    AD1CON1 = 0x20E4;   // A/D sample auto-start mode set for sampling begins immediately after last conversion completes, SAMP bit is automatically set, Conversion trigger source set to internal counter (auto-convert), data output format is integer, stop in idle mode set to discontinue module operation when device enters idle mode
+    AD1CHS = 5;         // positive input is AN5
+    AD1CSSL = 0;        // low reference set to 0
+
+    AD1CON1bits.ADON = 1; // A/D operating mode set to A/D converter module is operating
+    IFS0bits.AD1IF = 0;   // clear the A/D 1 interrupt flag
 
     while(1)
     {
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 42181bca31638fa6a7a88a8e23f8b8c66d91c1a7
-        while(!done);
-        done = 0;
-        adcPtr = (unsigned int*)(&ADC1BUF0);
-        temp = 0;
-        for(i=0; i<16; i++)
-        {
-            adcBuff[i] = *adcPtr++;
-            temp = temp +adcBuff[i];
-        }
-
-        ADC_value = temp/16;
-        sprintf(value, "%6d", ADC_value);
-        LCDMoveCursor(0,0);
-        LCDPrintString(value);
-        AD_value = (ADC_value * 3.3)/1024;
-        sprintf(value, "%6.2f", AD_value);
-        LCDMoveCursor(1,0);
-        LCDPrintString(value);
-<<<<<<< HEAD
-=======
-        AD1CON1bits.SAMP = 1;
-=======
         while(!IFS0bits.AD1IF);  // wait while the A/D 1 interrupt flag is low
         IFS0bits.AD1IF = 0;     // clear the A/D 1 interrupt flag
         ADC_value = ADC1BUF0;   // stores the current value in the A/D 1 buffer in the ADC_value variable
@@ -88,17 +59,9 @@ int main(void)
         sprintf(value, "%6.2f", AD_value);  // formats the value in AD_value to 2 decimals places and stores it in the value variable
         LCDMoveCursor(1,0);                 // moves the cursor on the LCD to the second line
         LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
->>>>>>> 8f0e66d5a4584c19e294e2f66c931231bd58e4c6
->>>>>>> 42181bca31638fa6a7a88a8e23f8b8c66d91c1a7
     }
 return 0;
 }
 
-void _ISR _ADC1Interrupt(void)
-{
-    IFS0bits.AD1IF = 0;
-    done=1;
-    AD1CON1bits.SAMP = 0;
-    
-}
+
 
