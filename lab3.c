@@ -79,6 +79,5 @@ void _ISR _ADC1Interrupt(void)
     IFS0bits.AD1IF = 0;
     done=1;
     AD1CON1bits.SAMP = 0;
-    
 }
 
