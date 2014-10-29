@@ -52,7 +52,7 @@ int main(void) {
     TMR3 = 0;           // resets timer 3 to 0
 
     T3CONbits.TCKPS = 11; // set a prescaler of 8 for timer 2
-    PR3 = 287;
+    PR3 = 57599;
     IEC0bits.T3IE = 1;
 
 /*****************************************************/
@@ -61,19 +61,19 @@ int main(void) {
     OC1CONbits.OCM0 = 1; // Initialize OCx pin low, compare event forces OCx pin high,
     OC1CONbits.OCTSEL = 1; // using timer 3
 
-    OC1R = OC1RS = PR3/2;
+    OC1R = OC1RS = 0;
 
     OC2CONbits.OCM0 = 1; // Initialize OCx pin low, compare event forces OCx pin high,
     OC2CONbits.OCTSEL = 1; // using timer 3
 
-    OC2R = OC2RS = PR3/2;
+    OC2R = OC2RS = 0;
 
     //Ports used for output to H-bridge
     //PWM outputs
-    RPOR6bits.RP12R = 18;						// Set RB12 to OC1 pin 23
-    TRISBbits.TRISB12 = 0;
-    RPOR6bits.RP13R = 19;						// Set RB13 to OC2 pin 24
-    TRISBbits.TRISB13 = 0;
+    RPOR4bits.RP8R = 18;
+    TRISBbits.TRISB8 = 0;
+    RPOR4bits.RP9R = 19;
+    TRISBbits.TRISB9 = 0;
 
 
     int ADC_value;      // variable to store the binary value in the ADC buffer
@@ -125,6 +125,8 @@ int main(void) {
         }
         duty1=OC1RS;
         duty2=OC2RS;
+        LCDClear();
+        DelayUs(100);
         sprintf(value, "%3.0f", percent1); // formats value in ADC_value as a 6 character string and stores in in the value character array
         LCDMoveCursor(1,0);                 // moves the cursor on the LCD to the second line
         LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
