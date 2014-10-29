@@ -43,6 +43,9 @@ int main(void) {
     int duty1 = 0;
     int duty2 = 0;
 
+    int ADC_value;      // variable to store the binary value in the ADC buffer
+    char value[8];      //  character array to store the values to be printed to the LCD
+    double AD_value;    // variable to store the calculated value of the voltage
 
 /**********************************************/
     T3CONbits.TCS = 0; // sets up to use internal clock
@@ -68,13 +71,13 @@ int main(void) {
 
     OC2R = OC2RS = PR3/2;
 
-
-    int ADC_value;      // variable to store the binary value in the ADC buffer
-    char value[8];      //  character array to store the values to be printed to the LCD
-    double AD_value;    // variable to store the calculated value of the voltage
-
+/*****************************************************/
     LCDInitialize();  // initialize the LCD display
-
+/*****************************************************/
+    //initialize board outputs
+    //RP18 tied to output compare 1
+    //RP19 tied to output compare 2
+/*****************************************************/
     AD1PCFG &= 0xFFDF; // Pin 7, AN5, where the POT is connected, IO6, is set to analog mode, AD module samples pin voltage
     AD1CON2 = 0x0;       // Always uses MUX A input multiplexer settings, configured as one 16-word buffer, interrupts at the completion of conversion for each sample/convert sequence, use the channel selected by the CH0SA bits as the MUX A input
     AD1CON3 = 0x0101;      //set the A/D conversion clock period to be 2*Tcy, set the Auto-Sample Time bits to be 1 T_AD, A/D conversion clock derived from system clock
@@ -84,7 +87,7 @@ int main(void) {
 
     AD1CON1bits.ADON = 1; // A/D operating mode set to A/D converter module is operating
     IFS0bits.AD1IF = 0;   // clear the A/D 1 interrupt flag
-
+/*****************************************************/
     while(1)
     {
         while(!IFS0bits.AD1IF);  // wait while the A/D 1 interrupt flag is low
