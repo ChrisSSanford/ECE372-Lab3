@@ -68,6 +68,13 @@ int main(void) {
 
     OC2R = OC2RS = PR3/2;
 
+    //Ports used for output to H-bridge
+    //PWM outputs
+    RPOR6bits.RP12R = 18;						// Set RB12 to OC1 pin 23
+    TRISBbits.TRISB12 = 0;
+    RPOR6bits.RP13R = 19;						// Set RB13 to OC2 pin 24
+    TRISBbits.TRISB13 = 0;
+
 
     int ADC_value;      // variable to store the binary value in the ADC buffer
     char value[8];      //  character array to store the values to be printed to the LCD
