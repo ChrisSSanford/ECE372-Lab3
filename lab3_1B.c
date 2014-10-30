@@ -82,12 +82,12 @@ int main(void) {
     RPOR1bits.RP2R = 19;    //10011 - OC2 (Output Compare 2)
 /*****************************************************/
     TRISBbits.TRISB11 = 0;
-    LATBbits.LATB11 = 0;
-    ODCBbits.ODB11 = 1;
+    LATBbits.LATB11 = 1;
+    CNPU1bits.CN15PUE = 1;
 
-    TRISBbits.TRISB3 = 0;
-    LATBbits.LATB3 = 0;
-    ODCBbits.ODB3 = 1;
+    TRISBbits.TRISB10 = 0;
+    LATBbits.LATB10 = 1;
+    CNPU2bits.CN16PUE = 1;
 /*****************************************************/
 
     int ADC_value;      // variable to store the binary value in the ADC buffer
@@ -146,9 +146,8 @@ int main(void) {
         sprintf(value, " %3.0f", percent2); // formats value in ADC_value as a 6 character string and stores in in the value character array
         LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
 // Motor switching
-       
-                    LATBbits.LATB11 = 1;
-                    LATBbits.LATB3 = 0;
+        LATBbits.LATB10=1;
+        LATBbits.LATB11=0;
 
     }
 return 0;
