@@ -29,7 +29,13 @@ _CONFIG1( JTAGEN_OFF & GCP_OFF & GWRP_OFF &
 _CONFIG2( IESO_OFF & SOSCSEL_SOSC & WUTSEL_LEG & FNOSC_PRIPLL & FCKSM_CSDCMD & OSCIOFNC_OFF &
           IOL1WAY_OFF & I2C1SEL_PRI & POSCMOD_XT )
 
+// ******************************************************************************************* //
 
+// variables that are accessed in multiple functions
+
+volatile int state = 0;
+
+// ******************************************************************************************* //
 
 
 /*
@@ -52,29 +58,37 @@ int main(void) {
     TMR3 = 0;           // resets timer 3 to 0
 
     T3CONbits.TCKPS = 11; // set a prescaler of 8 for timer 2
-    PR3 = 57599;
+    PR3 = 575;
     IEC0bits.T3IE = 1;
 
 /*****************************************************/
     
 
-    OC1CONbits.OCM0 = 1; // Initialize OCx pin low, compare event forces OCx pin high,
+    OC1CONbits.OCM = 6; // Initialize OCx pin low, compare event forces OCx pin high,
     OC1CONbits.OCTSEL = 1; // using timer 3
 
-    OC1R = OC1RS = 0;
+    OC1R = OC1RS = PR3;
+    OC1RS=PR3/2;
 
-    OC2CONbits.OCM0 = 1; // Initialize OCx pin low, compare event forces OCx pin high,
+    OC2CONbits.OCM = 6; // Initialize OCx pin low, compare event forces OCx pin high,
     OC2CONbits.OCTSEL = 1; // using timer 3
 
-    OC2R = OC2RS = 0;
+    OC2R = OC2RS = PR3;
+    OC2RS=PR3/2;
 
     //Ports used for output to H-bridge
     //PWM outputs
-    RPOR4bits.RP8R = 18;
-    TRISBbits.TRISB8 = 0;
-    RPOR4bits.RP9R = 19;
-    TRISBbits.TRISB9 = 0;
+    RPOR0bits.RP0R = 18;
+    RPOR1bits.RP2R = 19;
+/*****************************************************/
+    TRISBbits.TRISB11 = 0;
+    LATBbits.LATB11 = 0;
+    ODCBbits.ODB11 = 1;
 
+    TRISBbits.TRISB3 = 0;
+    LATBbits.LATB3 = 0;
+    ODCBbits.ODB3 = 1;
+/*****************************************************/
 
     int ADC_value;      // variable to store the binary value in the ADC buffer
     char value[8];      //  character array to store the values to be printed to the LCD
@@ -91,6 +105,7 @@ int main(void) {
 
     AD1CON1bits.ADON = 1; // A/D operating mode set to A/D converter module is operating
     IFS0bits.AD1IF = 0;   // clear the A/D 1 interrupt flag
+    T3CONbits.TON = 1;  // Turn timer 3 on - VVVEEERRRYYY important for comparisons
 
     while(1)
     {
@@ -125,13 +140,23 @@ int main(void) {
         }
         duty1=OC1RS;
         duty2=OC2RS;
-        LCDClear();
-        DelayUs(100);
         sprintf(value, "%3.0f", percent1); // formats value in ADC_value as a 6 character string and stores in in the value character array
         LCDMoveCursor(1,0);                 // moves the cursor on the LCD to the second line
         LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
         sprintf(value, " %3.0f", percent2); // formats value in ADC_value as a 6 character string and stores in in the value character array
         LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
+    switch(state){
+            //State 0: Ready State
+            //Wait for user input
+                case 0:
+                    LATBbits.LATB11 = 0;
+                    LATBbits.LATB3=1;
+                    break;
+                case 1:
+                    LATBbits.LATB11 = 1;
+                    LATBbits.LATB3=0;
+                    break;
+    }
     }
 return 0;
 }
