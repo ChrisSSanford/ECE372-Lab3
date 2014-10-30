@@ -34,6 +34,7 @@ _CONFIG2( IESO_OFF & SOSCSEL_SOSC & WUTSEL_LEG & FNOSC_PRIPLL & FCKSM_CSDCMD & O
 // variables that are accessed in multiple functions
 
 volatile int state = 0;
+volatile int prevState=0;
 
 // ******************************************************************************************* //
 
@@ -88,6 +89,14 @@ int main(void) {
     TRISBbits.TRISB10 = 0;
     LATBbits.LATB10 = 1;
     CNPU2bits.CN16PUE = 1;
+/*****************************************************/
+// Configure TRIS register bits for switch 1 input
+	TRISBbits.TRISB5 = 1;
+
+// Configure CN register bits to enable change notifications for switch input.
+	CNEN2bits.CN27IE = 1;
+        IFS1bits.CNIF = 0;
+        IEC1bits.CNIE = 1;
 /*****************************************************/
 
     int ADC_value;      // variable to store the binary value in the ADC buffer
@@ -146,8 +155,24 @@ int main(void) {
         sprintf(value, " %3.0f", percent2); // formats value in ADC_value as a 6 character string and stores in in the value character array
         LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
 // Motor switching
-        LATBbits.LATB10=1;
-        LATBbits.LATB11=0;
+        switch(state){
+
+            //State 0: Idle Sate-wait for button press
+            case 0:
+                LATBbits.LATB10=0;
+                LATBbits.LATB11=0;
+                break;
+            //State 1: Drive forward
+            case 1:
+                LATBbits.LATB10=1;
+                LATBbits.LATB11=0;
+                break;
+            //State 2: Drive backwards
+            case 2:
+                LATBbits.LATB10=0;
+                LATBbits.LATB11=1;
+                break;
+        }
 
     }
 return 0;
@@ -157,5 +182,25 @@ void __attribute__((interrupt,auto_psv)) _T3Interrupt(void){
     IFS0bits.T3IF = 0;
 
 
+}
+void __attribute__((interrupt,auto_psv)) _CNInterrupt(void)
+{
+    // Clear CN interrupt flag to allow another CN interrupt to occur.
+
+    while (PORTBbits.RB5==0);
+    IFS1bits.CNIF = 0;
+    if(state == 0 && prevState !=1){
+        state = 1;
+        prevState=1;
+
+    }
+
+    else if(state == 0 && prevState==1){
+        state = 2;
+        prevState=2;
+    }
+    else {
+        state = 0;
+    }
 }
 
