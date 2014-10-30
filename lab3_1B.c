@@ -57,7 +57,7 @@ int main(void) {
     IFS0bits.T3IF = 0;  // reset timer 3 interrupt flag
     TMR3 = 0;           // resets timer 3 to 0
 
-    T3CONbits.TCKPS = 11; // set a prescaler of 8 for timer 2
+    T3CONbits.TCKPS = 3; // set a prescaler of 8 for timer 2
     PR3 = 575;
     IEC0bits.T3IE = 1;
 
@@ -78,8 +78,8 @@ int main(void) {
 
     //Ports used for output to H-bridge
     //PWM outputs
-    RPOR0bits.RP0R = 18;
-    RPOR1bits.RP2R = 19;
+    RPOR0bits.RP0R = 18;    //10010 - OC1 (Output Compare 1)
+    RPOR1bits.RP2R = 19;    //10011 - OC2 (Output Compare 2)
 /*****************************************************/
     TRISBbits.TRISB11 = 0;
     LATBbits.LATB11 = 0;
@@ -145,18 +145,11 @@ int main(void) {
         LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
         sprintf(value, " %3.0f", percent2); // formats value in ADC_value as a 6 character string and stores in in the value character array
         LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
-    switch(state){
-            //State 0: Ready State
-            //Wait for user input
-                case 0:
-                    LATBbits.LATB11 = 0;
-                    LATBbits.LATB3=1;
-                    break;
-                case 1:
+// Motor switching
+       
                     LATBbits.LATB11 = 1;
-                    LATBbits.LATB3=0;
-                    break;
-    }
+                    LATBbits.LATB3 = 0;
+
     }
 return 0;
 }
