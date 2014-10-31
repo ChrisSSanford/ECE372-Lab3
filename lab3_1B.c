@@ -47,20 +47,17 @@ int main(void) {
     
     double percent1 = 0;
     double percent2 = 0;
-    int duty1 = 0;
-    int duty2 = 0;
 
 
 /**********************************************/
     T3CONbits.TCS = 0; // sets up to use internal clock 
     T3CONbits.TGATE = 0; 
     T3CONbits.TON = 0;  // Turn timer 3 off
-    IFS0bits.T3IF = 0;  // reset timer 3 interrupt flag
     TMR3 = 0;           // resets timer 3 to 0
 
     T3CONbits.TCKPS = 3; // set a prescaler of 8 for timer 2
     PR3 = 575;
-    IEC0bits.T3IE = 1;
+
 
 /*****************************************************/
     
@@ -69,13 +66,11 @@ int main(void) {
     OC1CONbits.OCTSEL = 1; // using timer 3
 
     OC1R = OC1RS = PR3;
-    OC1RS=PR3/2;
 
     OC2CONbits.OCM = 6; // Initialize OCx pin low, compare event forces OCx pin high,
     OC2CONbits.OCTSEL = 1; // using timer 3
 
     OC2R = OC2RS = PR3;
-    OC2RS=PR3/2;
 
     //Ports used for output to H-bridge
     //PWM outputs
@@ -147,8 +142,6 @@ int main(void) {
             percent1=100;
             percent2=100;
         }
-        duty1=OC1RS;
-        duty2=OC2RS;
         sprintf(value, "%3.0f", percent1); // formats value in ADC_value as a 6 character string and stores in in the value character array
         LCDMoveCursor(1,0);                 // moves the cursor on the LCD to the second line
         LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
@@ -178,11 +171,7 @@ int main(void) {
 return 0;
 }
 
-void __attribute__((interrupt,auto_psv)) _T3Interrupt(void){
-    IFS0bits.T3IF = 0;
 
-
-}
 void __attribute__((interrupt,auto_psv)) _CNInterrupt(void)
 {
     // Clear CN interrupt flag to allow another CN interrupt to occur.
