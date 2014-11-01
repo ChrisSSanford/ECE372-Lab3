@@ -47,6 +47,9 @@ int main(void) {
     
     double percent1 = 0;
     double percent2 = 0;
+    double oldpercent1=-1;
+    double oldpercent2=-1;
+    double oldADVal=-1;
 
 
 /**********************************************/
@@ -115,11 +118,13 @@ int main(void) {
     {
         while(!IFS0bits.AD1IF);  // wait while the A/D 1 interrupt flag is low
         IFS0bits.AD1IF = 0;     // clear the A/D 1 interrupt flag
-        LCDClear();
         ADC_value = ADC1BUF0;   // stores the current value in the A/D 1 buffer in the ADC_value variable
         sprintf(value, "%6d", ADC_value); // formats value in ADC_value as a 6 character string and stores in in the value character array
-        LCDMoveCursor(0,0);                 // moves the cursor on the LCD to the home position
-        LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
+        if(oldADVal!=ADC_value){
+            LCDMoveCursor(0,0);                 // moves the cursor on the LCD to the home position
+            LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
+            oldADVal=ADC_value;
+        }
         AD_value = (ADC_value * 3.3)/1024;  // converts the binary value of the voltage to the analog value by multiplying by the maximum voltage and dividing by 2^n = 2^10, then stores it in AD_value
         if (AD_value<1.65){
             OC1RS = PR3;
@@ -143,10 +148,17 @@ int main(void) {
             percent2=100;
         }
         sprintf(value, "%3.0f", percent1); // formats value in ADC_value as a 6 character string and stores in in the value character array
-        LCDMoveCursor(1,0);                 // moves the cursor on the LCD to the second line
-        LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
+        if (oldpercent1!=percent1){
+            LCDMoveCursor(1,0);                 // moves the cursor on the LCD to the second line
+            LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
+            oldpercent1=percent1;
+        }
         sprintf(value, " %3.0f", percent2); // formats value in ADC_value as a 6 character string and stores in in the value character array
-        LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
+        if (oldpercent2!=percent2){
+            LCDMoveCursor(1,3);
+            LCDPrintString(value);              // sends value to the LCD print function to display it on the LCD screen
+            oldpercent2=percent2;
+        }
 // Motor switching
         switch(state){
 
